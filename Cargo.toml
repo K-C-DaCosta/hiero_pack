@@ -1,0 +1,18 @@
+[package]
+name = "hiero_pack"
+version = "0.1.0"
+authors = ["khadeem dacosta <khadeem.dacosta@gmail.com>"]
+edition = "2018"
+description = "a simple parser and packing tool for libgdx's Hiero"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = ['console']
+console = ['clap']
+
+[dependencies]
+png = "0.16.7"
+serde = {version = "1.0.63" , features =["derive"]}
+bincode = "1.3.1"
+#**** optional deps **** 
+clap = {version = "2.33.3", optional = true}
