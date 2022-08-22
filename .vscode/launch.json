@@ -1,0 +1,87 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'hiero_pack'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=hiero_pack"
+                ],
+                "filter": {
+                    "name": "hiero_pack",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'hiero_pack'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=hiero_pack",
+                    "--package=hiero_pack"
+                ],
+                "filter": {
+                    "name": "hiero_pack",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'hiero_pack' parse bug",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=hiero_pack",
+                    "--package=hiero_pack"
+                ],
+                "filter": {
+                    "name": "hiero_pack",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "--font",
+                "/home/narco/hiero_fonts/default.hiero.fnt",
+                "--pages",
+                "~/hiero_fonts/default.hiero.png"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'hiero_pack'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=hiero_pack",
+                    "--package=hiero_pack"
+                ],
+                "filter": {
+                    "name": "hiero_pack",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

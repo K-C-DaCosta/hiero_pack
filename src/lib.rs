@@ -1,7 +1,8 @@
+use parse::{HieroToken, HieroTokenizer};
 use serde::{Deserialize, Serialize};
 use std::collections::*;
 
-mod parse_util;
+mod parse;
 
 pub enum PageUnpackError {
     InvalidIndex,
@@ -36,7 +37,7 @@ impl HieroAtlas {
             compressed_pages: Vec::new(),
         })
     }
-    
+
     pub fn deserialize(data: Vec<u8>) -> Result<Self, HieroPackError> {
         Ok(bincode::deserialize::<Self>(&data[..])?)
     }
@@ -185,14 +186,14 @@ impl AtlasBuilder for HieroIncomplete<HieroAtlas> {
     type AtlasType = HieroAtlas;
 
     fn with_font_file(mut self, fnt_file: String) -> Result<Self, &'static str> {
-        let mut table: Vec<Vec<&str>> = Vec::new();
+        let mut table: Vec<Vec<HieroToken>> = Vec::new();
         for line in fnt_file.lines() {
-            table.push(line.split_whitespace().collect());
+            table.push(HieroTokenizer::tokenize_line(line));
         }
-        self.inner.info = parse_util::parse_info(&mut table)?;
-        self.inner.common = parse_util::parse_common(&mut table)?;
-        self.inner.bitmap_table = parse_util::parse_glyphs(&mut table)?;
-        self.inner.kerning_table = parse_util::parse_kerning_table(&mut table)?;
+        self.inner.info = parse::parse_info(&mut table)?;
+        self.inner.common = parse::parse_common(&mut table)?;
+        self.inner.bitmap_table = parse::parse_glyphs(&table)?;
+        self.inner.kerning_table = parse::parse_kerning_table(&mut table)?;
         Ok(self)
     }
 
@@ -230,4 +231,18 @@ impl From<HieroPackError> for String {
             HieroPackError::DeserializeError(e) => e.to_string(),
         }
     }
+}
+
+
+#[test]
+fn parse_test() {
+    let font_file = std::fs::read_to_string("/home/narco/hiero_fonts/default.hiero.fnt").unwrap();
+    let page_file = std::fs::read("/home/narco/hiero_fonts/default.hiero.png").unwrap();
+    let atlas = HieroAtlas::new()
+        .with_pages(vec![page_file])
+        .with_font_file(font_file)
+        .expect("file failed to parse")
+        .build();
+
+    
 }
