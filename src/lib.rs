@@ -238,11 +238,9 @@ impl From<HieroPackError> for String {
 fn parse_test() {
     let font_file = std::fs::read_to_string("/home/narco/hiero_fonts/default.hiero.fnt").unwrap();
     let page_file = std::fs::read("/home/narco/hiero_fonts/default.hiero.png").unwrap();
-    let atlas = HieroAtlas::new()
+    let _atlas = HieroAtlas::new()
         .with_pages(vec![page_file])
         .with_font_file(font_file)
         .expect("file failed to parse")
         .build();
-
-    
 }
