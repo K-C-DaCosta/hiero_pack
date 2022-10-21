@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/hiero_pack/badge.svg)](https://docs.rs/hiero_pack)
 
 
-This is a simple parser and packing tool for libgdx's  <a href="https://github.com/libgdx/libgdx/wiki/Hiero">Hiero</a>
+This is a simple parser and packing tool for libgdx's  <a href="https://libgdx.com/wiki/tools/hiero">Hiero</a>
 
 # How to compile 
 ```
