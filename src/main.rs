@@ -7,7 +7,7 @@ fn main() {
     #[cfg(feature = "console")]
     match run_app() {
         Err(err) => {
-            eprint!("Error: {}\n", err);
+            eprintln!("Error: {}", err);
             std::process::exit(1)
         }
         Ok(_) => std::process::exit(0),
@@ -21,14 +21,14 @@ fn run_app() -> Result<(), String> {
     let page_paths = clap_matches.values_of("page_paths").unwrap();
     let output = clap_matches.value_of("output_opt");
 
-    let font_bytes = std::fs::read(font_path).map_err(|e| HieroPackError::from(e))?;
-    let font_text = String::from_utf8(font_bytes).map_err(|e| HieroPackError::from(e))?;
+    let font_bytes = std::fs::read(font_path).map_err(Error::from)?;
+    let font_text = String::from_utf8(font_bytes).map_err(Error::from)?;
 
     let page_data: Vec<_> = page_paths
         .map(|page_path| match std::fs::read(page_path) {
             Ok(data) => data,
             Err(err) => {
-                eprint!("Error: {}\n", err.to_string());
+                eprintln!("Error: {}", err);
                 std::process::exit(1);
             }
         })
@@ -43,7 +43,7 @@ fn run_app() -> Result<(), String> {
         atlas
             .bitmap_table
             .iter()
-            .filter(|(key, _)| key.is_whitespace() == false)
+            .filter(|(key, _)| !key.is_whitespace())
             .for_each(|(key, val)| {
                 println!("key:'{}',val:{}", key, val);
             });
@@ -57,8 +57,7 @@ fn run_app() -> Result<(), String> {
         Some(path) => std::fs::write(path, atlas_bytes),
         None => std::fs::write("atlas.bcode", atlas_bytes),
     };
-
-    write_result.map_err(|e| HieroPackError::from(e))?;
+    write_result.map_err(Error::from)?;
 
     Ok(())
 }

@@ -1,6 +1,6 @@
 use super::*;
 
-mod tokenizer_tests;
+mod tests;
 
 #[derive(Clone, Copy, Debug)]
 pub struct InSlice {
@@ -57,7 +57,7 @@ pub enum HieroTokenizer {
     ValueWhite,
 }
 impl HieroTokenizer {
-    pub fn tokenize_line<'a>(line: &'a str) -> Vec<HieroToken<'a>> {
+    pub fn tokenize_line(line: &str) -> Vec<HieroToken<'_>> {
         let mut byte_cursor = 0;
         let mut res = vec![];
         let mut state = HieroTokenizer::Start;
@@ -85,7 +85,7 @@ impl HieroTokenizer {
                     }
                 }
                 Self::KeyWhite => {
-                    if c.is_whitespace() == false {
+                    if !c.is_whitespace() {
                         accum = InSlice::new(byte_cursor);
                         accum.push(c);
                         state = Self::Key;
@@ -130,7 +130,7 @@ impl HieroTokenizer {
                     }
                 }
                 Self::ValueWhite => {
-                    if c.is_whitespace() == false {
+                    if !c.is_whitespace() {
                         accum = InSlice::new(byte_cursor);
                         accum.push(c);
                         state = Self::Key;
@@ -143,7 +143,7 @@ impl HieroTokenizer {
     }
 }
 
-pub fn parse_common(table: &Vec<Vec<HieroToken>>) -> Result<HieroCommon, &'static str> {
+pub fn parse_common(table: &[Vec<HieroToken>]) -> Result<HieroCommon, &'static str> {
     let mut common = HieroCommon::default();
     let common_line = &table[1];
 
@@ -196,7 +196,7 @@ pub fn parse_common(table: &Vec<Vec<HieroToken>>) -> Result<HieroCommon, &'stati
     Ok(common)
 }
 
-pub fn parse_info(table: &Vec<Vec<HieroToken>>) -> Result<HieroInfo, &'static str> {
+pub fn parse_info(table: &[Vec<HieroToken>]) -> Result<HieroInfo, &'static str> {
     let mut info = HieroInfo::default();
 
     let info_line = &table[0];
@@ -276,29 +276,27 @@ pub fn parse_info(table: &Vec<Vec<HieroToken>>) -> Result<HieroInfo, &'static st
     info.padding = find_pair_by_key(info_line, "padding")
         .ok_or("padding not found")?
         .1
-        .split(",")
+        .split(',')
         .filter_map(|num| num.parse().ok())
         .collect();
 
     info.spacing = find_pair_by_key(info_line, "spacing")
         .ok_or("spacing not found")?
         .1
-        .split(",")
+        .split(',')
         .filter_map(|num| num.parse().ok())
         .collect();
     Ok(info)
 }
 
-pub fn parse_glyphs(
-    table: &Vec<Vec<HieroToken>>,
-) -> Result<HashMap<char, HieroBitmap>, &'static str> {
-    let mut glyph_table: HashMap<char, HieroBitmap> = HashMap::new();
+pub fn parse_glyphs(table: &[Vec<HieroToken>]) -> Result<HashMap<char, HieroBitmapInfo>, &'static str> {
+    let mut glyph_table: HashMap<char, HieroBitmapInfo> = HashMap::new();
 
-    let mut line_iter = table
+    let line_iter = table
         .iter()
         .filter(|table| table[0].as_entry().is_some() && table[0].as_entry().unwrap() == "char");
 
-    while let Some(char_line) = line_iter.next() {
+    for char_line in line_iter {
         let char_data: Vec<i32> = char_line[1..]
             .iter()
             .filter_map(|tok| tok.as_pair())
@@ -307,7 +305,7 @@ pub fn parse_glyphs(
         let id: char = std::char::from_u32(char_data[0] as u32).unwrap();
         glyph_table.insert(
             id,
-            HieroBitmap {
+            HieroBitmapInfo {
                 x: char_data[1],
                 y: char_data[2],
                 width: char_data[3],
@@ -325,15 +323,15 @@ pub fn parse_glyphs(
 }
 
 pub fn parse_kerning_table(
-    table: &Vec<Vec<HieroToken>>,
+    table: &[Vec<HieroToken>],
 ) -> Result<HashMap<(char, char), i32>, &'static str> {
     let mut kerning_table = HashMap::new();
 
-    let mut line_iter = table
+    let line_iter = table
         .iter()
         .filter(|table| table[0].as_entry().is_some() && table[0].as_entry().unwrap() == "kerning");
 
-    while let Some(char_line) = line_iter.next() {
+    for char_line in line_iter {
         let kerning_data: Vec<i32> = char_line[1..]
             .iter()
             .flat_map(|tok| tok.as_pair())
@@ -348,7 +346,7 @@ pub fn parse_kerning_table(
     Ok(kerning_table)
 }
 
-fn find_pair_by_key<'a>(line: &'a Vec<HieroToken>, key: &'a str) -> Option<(&'a str, &'a str)> {
+fn find_pair_by_key<'a>(line: &'a [HieroToken], key: &'a str) -> Option<(&'a str, &'a str)> {
     line.iter()
         .filter_map(|tok| tok.as_pair())
         .find(|(k, _v)| k == &key)

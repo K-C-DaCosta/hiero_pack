@@ -1,6 +1,6 @@
 [package]
 name = "hiero_pack"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["khadeem dacosta <khadeem.dacosta@gmail.com>"]
 edition = "2018"
 description = "a simple parser and packing tool for libgdx's Hiero"
@@ -9,6 +9,7 @@ repository="https://github.com/K-C-DaCosta/hiero_pack"
 keywords =["text","graphics","packer"]
 categories =["command-line-utilities"]
 license = "MIT OR Apache-2.0"
+exclude = ["fonts"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]

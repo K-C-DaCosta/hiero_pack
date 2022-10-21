@@ -1,4 +1,9 @@
 # Hiero Pack
+[![Build status](https://github.com/K-C-DaCosta/hiero_pack/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/K-C-DaCosta/hiero_pack/actions/workflows/rust.yml)
+[![Crates.io](https://img.shields.io/crates/v/hiero_pack)](https://crates.io/crates/hiero_pack)
+[![Documentation](https://docs.rs/hiero_pack/badge.svg)](https://docs.rs/hiero_pack)
+
+
 This is a simple parser and packing tool for libgdx's  <a href="https://github.com/libgdx/libgdx/wiki/Hiero">Hiero</a>
 
 # How to compile 
