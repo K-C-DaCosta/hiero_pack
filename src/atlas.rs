@@ -17,8 +17,8 @@ pub struct HieroAtlas {
 }
 
 impl HieroAtlas {
-    pub fn new() -> HieroIncomplete<Self> {
-        HieroIncomplete::new(Self {
+    pub fn new() -> Incomplete<Self> {
+        Incomplete::new(Self {
             info: HieroInfo::default(),
             common: HieroCommon::default(),
             bitmap_table: HashMap::new(),

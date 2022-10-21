@@ -7,7 +7,7 @@ pub trait AtlasBuilder: Sized {
     fn build(self) -> Self::AtlasType;
 }
 
-impl AtlasBuilder for HieroIncomplete<HieroAtlas> {
+impl AtlasBuilder for Incomplete<HieroAtlas> {
     type AtlasType = HieroAtlas;
 
     fn with_font_file(mut self, fnt_file: String) -> Result<Self, &'static str> {
